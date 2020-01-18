@@ -126,6 +126,7 @@ module Observable = {
 
     @param A list of arguments you want to be emitted
     @return An Observable that emits the arguments described above and then completes
+    see: https://github.com/ReactiveX/rxjs/blob/master/src/internal/observable/of.ts
  */
 [@bs.module "rxjs"] [@bs.variadic]
 external of_: array('a) => Observable.t('a) = "of";

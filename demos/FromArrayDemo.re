@@ -1,53 +1,24 @@
-// open RxJsTypes;
-// module Observable = {
-//   type t('a) = observable('a);
+/**
+https://rxjs.dev/api/index/function/from
 
-//   type subscribeParams('a) = {
-//     next: option('a => unit),
-//     error: option(Js.Json.t => unit),
-//     complete: option(unit => unit),
-//   };
+```js
+import { from } from 'rxjs';
 
-//   [@bs.send]
-//   external subscribe_: (t('a), subscribeParams('a)) => subscription =
-//     "subscribe";
+const array = [10, 20, 30];
+const result = from(array);
 
-//   let subscribe =
-//       (
-//         self: t('a),
-//         ~next: option('a => unit)=?,
-//         ~error: option(Js.Json.t => unit)=?,
-//         ~complete: option(unit => unit)=?,
-//         (),
-//       ) => {
-//     let args = {next, error, complete};
-//     subscribe_(self, args);
-//   };
+result.subscribe(x => console.log(x));
 
-//   [@bs.send]
-//   external subscribe0: (t('a), observer('a)) => subscription = "subscribe";
-
-//   [@bs.module "rxjs/_esm2015"] [@bs.scope "Observable"]
-//   external make: (observer('a) => option(unit => unit)) => observable('a) =
-//     "create";
-// };
-/* import { from } from 'rxjs';
-
-   const array = [10, 20, 30];
-   const result = from(array);
-
-   result.subscribe(x => console.log(x));
-
-   // Logs:
-   // 10
-   // 20
-   // 30 */
-
-// [@bs.module "rxjs/_esm2015"]
-// external fromArray: array('a) => Rx.Observable.t('a) = "from";
+// Logs:
+// 10
+// 20
+// 30
+```
+ */
 let array = [|10, 20, 30|];
 
-let result:Rx.Observable.t('a) = Rx.Observable.fromArray(array);
+let result = Rx_Observable.(fromArray(array) |> Rx.Observable.asObservable);
+// let observable = result -> Rx.Observable.asObservable;
 let test = () =>
   result->Rx.Observable.subscribe(
     ~next=x => Js.log2("FromArrayDemo: Click value ", x),
