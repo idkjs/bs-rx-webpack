@@ -41,16 +41,16 @@ module Observable = {
   [@bs.module "rxjs/_esm2015"] [@bs.scope "Observable"]
   external make: (observer('a) => option(unit => unit)) => observable('a) =
     "create";
+  [@bs.module "rxjs/_esm2015"]
+  external fromArray: array('a) => observable('a) = "from";
 };
 
-[@bs.module "rxjs/_esm2015"]
-external fromArray: array('a) => observable('a) = "from";
 let array = [|10, 20, 30|];
-let result = fromArray(array);
+let result = Observable.fromArray(array);
 let test = () =>
   result->Observable.subscribe(
-    ~next=x => Js.log2("FromArrayDemo: Click value ", x),
-    ~error=err => Js.log2("FromArrayDemo: something wrong occurred", err),
-    ~complete=() => Js.log("FromArrayDemo: done"),
+    ~next=x => Js.log2("RxJsFromArrayDemo: value ", x),
+    ~error=err => Js.log2("RxJsFromArrayDemo: something wrong occurred", err),
+    ~complete=() => Js.log("RxJsFromArrayDemo: done"),
     (),
   );
