@@ -1,7 +1,7 @@
 open Rx_Observable.Observable;
 
 type operator('a, 'b) = t('a) => t('b);
-
+type unaryFunction('a, 'b) = t('a) => t('b);
 /**
   Ignores source values for a duration determined by another Observable, then
   emits the most recent value from the source Observable, then repeats this
@@ -657,3 +657,10 @@ external withLatestFrom6:
   (t('b), t('c), t('d), t('e), t('f)) =>
   operator('a, ('a, 'b, 'c, 'd, 'e, 'f)) =
   "withLatestFrom";
+
+  /* todo, this is same as withLatestFrom6, need to update for 7 unions*/
+  [@bs.module "rxjs/operators"]
+  external withLatestFrom7:
+    (t('b), t('c), t('d), t('e), t('f)) =>
+    operator('a, ('a, 'b, 'c, 'd, 'e, 'f)) =
+    "withLatestFrom";

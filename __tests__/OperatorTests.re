@@ -15,20 +15,20 @@ describe("Operators", () => {
     |];
 
     let expected = "         -----y--------x-----x|";
-    let result = e1 
+    let result = e1
     |> HotObservable.asObservable
     |> Rx.Operators.audit(~durationSelector=`Subscribable(_ => e2 |> ColdObservable.asObservable));
 
-    ts 
-    |> expectObservable(result) 
+    ts
+    |> expectObservable(result)
     |> toBeObservable(expected);
 
-    ts 
-    |> expectSubscriptions(e1 |> HotObservable.subscriptions) 
+    ts
+    |> expectSubscriptions(e1 |> HotObservable.subscriptions)
     |> toBeSubscriptions(e1subs);
 
-    ts 
-    |> expectSubscriptions(e2 |> ColdObservable.subscriptions) 
+    ts
+    |> expectSubscriptions(e2 |> ColdObservable.subscriptions)
     |> toBeSubscriptions(e2subs);
   });
 
@@ -36,11 +36,11 @@ describe("Operators", () => {
     let e1 = ts |> hot("-a-x-y----b---x-cx---|");
     let subs = [|"     ^--------------------!"|];
     let expected = "   ------y--------x-----|";
-    let result = e1 
+    let result = e1
     |> HotObservable.asObservable
     |> Rx.Operators.auditTime(~duration=5., ~scheduler=ts |> asScheduler, ());
 
-    ts 
+    ts
     |> expectObservable(result)
     |> toBeObservable(expected);
 
@@ -59,9 +59,9 @@ describe("Operators", () => {
       "z": [|"g", "h", "i"|]
     };
 
-    ts 
+    ts
     |> expectObservable(
-      a 
+      a
       |> HotObservable.asObservable
       |> Rx.Operators.buffer(b |> HotObservable.asObservable))
     |> toBeObservable(expected, ~values);
@@ -99,11 +99,11 @@ describe("Operators", () => {
       "z": [||]
     };
 
-    let result = e1 
+    let result = e1
     |> HotObservable.asObservable
     |> Rx.Operators.bufferTime(
-      ~timeSpan=time, 
-      ~maxBufferSize=Js.Int.max, 
+      ~timeSpan=time,
+      ~maxBufferSize=Js.Int.max,
       ~scheduler=ts |> TestScheduler.asScheduler, ());
 
     ts
@@ -128,11 +128,11 @@ describe("Operators", () => {
     let result = e1
     |> Rx.Operators.bufferToggle(~opening=`Subscribable(e2), ~closing=`Subscribable(_ => e3));
 
-    ts 
-    |> expectObservable(result) 
+    ts
+    |> expectObservable(result)
     |> toBeObservable(expected, ~values);
   });
-  
+
   testMarbles("bufferWhen: should emit buffers that close and reopen", ts => {
     let e1 = ts |> hot("--a--^---b---c---d---e---f---g---------|   ") |> HotObservable.asObservable;
     let e2 = ts |> cold("    --------------(s|)                    ") |> ColdObservable.asObservable;
@@ -177,7 +177,7 @@ describe("Operators", () => {
     let z = ts |> cold(                               "---e--f-|");
     let outer = ts |> hot("-x---y----z------|              ", ~values={ "x": x, "y": y, "z": z }) |> HotObservable.asObservable;
     let expected = "-----a------b---------c-d------e--f-|";
-    ts 
+    ts
     |> expectObservable(outer |> Rx.Operators.concatAll())
     |> toBeObservable(expected)
   });
@@ -190,13 +190,13 @@ describe("Operators", () => {
     let expected =      "--x-x-x-y-y-yz-z-z-|";
     let values = {"x": 10, "y": 30, "z": 50};
 
-    let result = e1 
+    let result = e1
     |> HotObservable.asObservable
-    |> Rx.Operators.concatMap((x, _idx) => 
-      e2 
+    |> Rx.Operators.concatMap((x, _idx) =>
+      e2
       |> Rx.Operators.map(i => i * int_of_string(x)
     ));
-    
+
     ts
     |> expectObservable(result)
     |> toBeObservable(expected, ~values);
@@ -245,11 +245,11 @@ describe("Operators", () => {
     let subs =           [|"^----------!"|];
     let expected =         "-----------(x|)";
 
-    let result = source 
-    |> HotObservable.asObservable 
+    let result = source
+    |> HotObservable.asObservable
     |> Rx.Operators.count();
 
-    ts 
+    ts
     |> expectObservable(result)
     |> toBeObservable(expected, ~values={"x": 3});
 
@@ -299,7 +299,7 @@ describe("Operators", () => {
     let expected = "-----a--b--|";
     let subs =    [|"^--------!  "|];
 
-    let result = e1 
+    let result = e1
     |> HotObservable.asObservable
     |> Rx.Operators.delay(`Int(t), ~scheduler=ts |> TestScheduler.asScheduler, ());
 
@@ -335,14 +335,14 @@ describe("Operators", () => {
         let res = selector[idx^] |> ColdObservable.asObservable
         idx := idx^ + 1;
         res
-      }, 
+      },
       ());
-    
+
     ts |> expectObservable(result) |> toBeObservable(expected)
     ts |> expectSubscriptions(e1 |> HotObservable.subscriptions) |> toBeSubscriptions(subs)
 
     Belt.Array.range(0, Array.length(selector) - 1)
-    |. Belt.Array.forEach(idx => 
+    |. Belt.Array.forEach(idx =>
       ts |> expectSubscriptions(selector[idx] |> ColdObservable.subscriptions) |> toBeSubscriptions(selectorSubs[idx])
     );
   });
@@ -358,15 +358,15 @@ describe("Operators", () => {
     let e1 = ts |> hot("--a--b--c--d-", ~values) |> HotObservable.asObservable;
     let expected = "--x--y--z--|";
     let result = e1
-    |> Rx_Operators.map(x => x == "|" 
-        ? Rx_Notification.createComplete() 
-        : Rx_Notification.createNext(x 
-          |> Js.String.replace("{", "") 
+    |> Rx_Operators.map(x => x == "|"
+        ? Rx_Notification.createComplete()
+        : Rx_Notification.createNext(x
+          |> Js.String.replace("{", "")
           |> Js.String.replace("}", "")))
     |> Rx_Operators.dematerialize();
-    
+
     ts
-    |> expectObservable(result) 
+    |> expectObservable(result)
     |> toBeObservable(expected)
   });
 
@@ -375,15 +375,15 @@ describe("Operators", () => {
     let e1subs =     [|"^-------------------!"|];
     let expected =     "--a--------b--------|";
 
-    ts 
+    ts
     |> expectObservable(
-      e1 
+      e1
       |> HotObservable.asObservable
       |> Rx_Operators.distinct())
     |> toBeObservable(expected);
 
     ts
-    |> expectSubscriptions(e1 |> HotObservable.subscriptions) 
+    |> expectSubscriptions(e1 |> HotObservable.subscriptions)
     |> toBeSubscriptions(e1subs);
   });
 
@@ -392,8 +392,8 @@ describe("Operators", () => {
     let e1 = ts |> hot("--a--b--c--d--e--f--|", ~values);
     let e1subs =     [|"^-------------------!"|];
     let expected =     "--a--b--c-----------|";
-    
-    ts 
+
+    ts
     |> expectObservable(
       e1
       |> HotObservable.asObservable
@@ -437,7 +437,7 @@ describe("Operators", () => {
       e1
       |> Rx_Operators.distinctUntilChanged())
     |> toBeObservable(expected)
-  });  
+  });
 
   testMarbles("distinctUntilKeyChanged: should distinguish between values", ts => {
     let values = {"a": {"k": 1}, "b": {"k": 2}, "c": {"k": 3}};
@@ -452,7 +452,7 @@ describe("Operators", () => {
     |> toBeObservable(expected, ~values)
   });
 
-  testMarbles("elementAt: hould return last element by zero-based index", ts => {
+  testMarbles("elementAt: should return last element by zero-based index", ts => {
     let source = ts |> hot("--a--b--c-d---|")
     let subs =           [|"^-------!"|];
     let expected =         "--------(c|)";
@@ -475,7 +475,7 @@ describe("Operators", () => {
 
     ts
     |> expectObservable(
-      e1 
+      e1
       |> ColdObservable.asObservable
       |> Rx_Operators.endWith([|"s"|]))
     |> toBeObservable(expected)

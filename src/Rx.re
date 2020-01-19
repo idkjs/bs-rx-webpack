@@ -6,3 +6,5 @@ module WebSocket = Rx_WebSocket;
 
 include Rx_Observable;
 include Rx_Types;
+
+[@bs.module "rxjs"] external pipe1: ('a, unaryFunction('a, 'b)) => 'b = "pipe";

@@ -29,3 +29,17 @@ module Observer2 = {
   [@bs.send] external error: (t('a,'e), 'e) => unit = "error";
   [@bs.send] external complete: unit => unit = "complete";
 };
+type observer('a);
+type observable('a);
+type connectableObservable('a);
+type unaryFunction('a, 'b) = 'a => 'b;
+type operatorFunction('a, 'b) =
+  unaryFunction(observable('a), observable('b));
+type subscription;
+type subject('a);
+type asyncSubject('a);
+type behaviorSubject('a);
+type replaySubject('a);
+type websocketSubject('a);
+
+type scheduler;
